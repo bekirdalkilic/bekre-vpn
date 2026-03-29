@@ -1,4 +1,4 @@
-# FRA VPN Client
+# Bekre VPN Client
 
 Kisisel VPN istemcisi. Frankfurt sunucusuna WireGuard (hizli) veya OpenVPN+Stunnel (engel atlatma) ile baglanir.
 
