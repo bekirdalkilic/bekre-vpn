@@ -167,7 +167,7 @@ pyinstaller --onefile --windowed --name BekreVPN client/vpn_client.py
 | Önlem | Detay |
 |---|---|
 | CA key şifreleme | AES-256 |
-| IPv6 leak önleme | sysctl + AllowedIPs ::/0 |
+| IPv6 leak önleme | sysctl ile IPv6 kapatılıyor |
 | Race condition fix | flock + ip_registry |
 | Peer silme | Python regex (boş blok bırakmaz) |
 | Kill switch | istemci wg0.conf'ta iptables kuralları |

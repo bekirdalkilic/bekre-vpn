@@ -5,7 +5,7 @@
 | Önlem | Durum | Detay |
 |---|---|---|
 | CA key şifreleme | ✅ | AES-256, her easyrsa işleminde passphrase gerekir |
-| IPv6 leak önleme | ✅ | sysctl + AllowedIPs ::/0 |
+| IPv6 leak önleme | ✅ | sysctl ile IPv6 kapatılıyor |
 | Race condition fix | ✅ | flock + /etc/wireguard/ip_registry |
 | Peer silme güvenliği | ✅ | Python regex, boş [Peer] bloğu bırakmaz |
 | Kill switch | ✅ | İstemci wg0.conf'ta iptables PostUp/PreDown |
