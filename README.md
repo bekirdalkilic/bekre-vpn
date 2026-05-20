@@ -113,7 +113,7 @@ cd /etc/openvpn/easy-rsa
 ### 4. OpenVPN + Stunnel
 
 ```bash
-systemctl enable --now openvpn@server stunnel4
+systemctl enable --now openvpn-server@server stunnel4
 ```
 
 ### 5. Scriptleri kopyala
@@ -180,7 +180,7 @@ Detaylar: [docs/SECURITY.md](docs/SECURITY.md)
 
 ## Roadmap
 
-- [ ] Fail2Ban (SSH + OpenVPN brute-force koruması)
+- [x] Fail2Ban (SSH + OpenVPN brute-force koruması)
 - [ ] Offline CA mimarisi
 - [ ] WebSocket obfuscation (wstunnel)
 - [ ] Monitoring paneli

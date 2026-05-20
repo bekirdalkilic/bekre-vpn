@@ -20,7 +20,7 @@
 
 ### Brute-Force Koruması Yok
 - **Risk:** SSH ve OpenVPN portlarına sözlük saldırısı
-- **Çözüm:** Fail2Ban kurulumu (roadmap'te)
+- **Durum:** Fail2Ban aktif ve çalışıyor ✅
 
 ### İmzasız EXE Dağıtımı
 - **Risk:** Windows Smart App Control BekreVPN.exe'yi bloke eder
