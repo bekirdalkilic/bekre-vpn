@@ -1,7 +1,36 @@
-configs/
+# Asla commit'lenmesin
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.crl
+*.ovpn
+wg0.conf
+ip_registry
+
+# Oluşturulan paketler
+/root/clients/
+/root/packages/
+*.zip
+*.zip.sha256
+
+# GUI build çıktısı
+dist/
+build/
+*.spec
 __pycache__/
 *.pyc
-build/
-dist/
-*.spec
-*.exe
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Installer'lar (büyük binary)
+installers/*.msi
+installers/*.exe
+BekreVPN.exe

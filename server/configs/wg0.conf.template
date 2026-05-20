@@ -1,0 +1,17 @@
+[Interface]
+# Sunucunun VPN içindeki IP adresi
+Address = 10.0.0.1/24
+# WireGuard portu — UDP 443 (TCP 443 Stunnel/OpenVPN ile çakışmaz)
+ListenPort = 443
+# Sunucunun private key'i
+PrivateKey = <SUNUCU_OZEL_ANAHTARI>
+
+# IPv6 leak önleme
+PostUp   = sysctl -w net.ipv6.conf.all.disable_ipv6=1
+PostDown = sysctl -w net.ipv6.conf.all.disable_ipv6=0
+
+# NAT — VPN trafiğini internete çıkar
+PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
+
+# Peer'lar add-user.sh tarafından otomatik eklenir

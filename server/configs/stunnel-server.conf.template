@@ -1,0 +1,8 @@
+; Stunnel Sunucu Konfigürasyonu
+; Gelen TCP 443 bağlantısını OpenVPN'e (127.0.0.1:1194) yönlendirir
+
+[openvpn]
+accept  = 443
+connect = 127.0.0.1:1194
+cert    = /etc/stunnel/stunnel.pem   ; self-signed veya Let's Encrypt
+key     = /etc/stunnel/stunnel.key
