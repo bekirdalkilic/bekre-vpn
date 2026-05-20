@@ -1,0 +1,59 @@
+name: Build & Release BekreVPN.exe
+
+on:
+  push:
+    tags:
+      - 'v*'          # v1.3, v1.4 gibi tag push'larında tetiklenir
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Bağımlılıkları kur
+        run: |
+          pip install pyinstaller customtkinter
+
+      - name: EXE build
+        working-directory: client
+        run: |
+          pyinstaller --onefile --windowed --name "BekreVPN" vpn_client.py
+
+      - name: SHA256 checksum
+        working-directory: client
+        run: |
+          certutil -hashfile dist\BekreVPN.exe SHA256 > dist\BekreVPN.exe.sha256
+
+      - name: GitHub Release oluştur ve EXE yükle
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "BekreVPN ${{ github.ref_name }}"
+          body: |
+            ## BekreVPN ${{ github.ref_name }}
+
+            ### İndirme
+            - **BekreVPN.exe** → Windows istemcisi (admin olarak çalıştır)
+            - **BekreVPN.exe.sha256** → Checksum doğrulama
+
+            ### Kullanım
+            1. EXE'yi indir
+            2. Sunucu yöneticisinden `configs.zip` al
+            3. EXE ile aynı klasöre `configs/` klasörünü koy
+            4. EXE'yi admin olarak çalıştır
+
+            > Windows Smart App Control açıksa: Ayarlar → Gizlilik ve Güvenlik → devre dışı bırak
+          files: |
+            client/dist/BekreVPN.exe
+            client/dist/BekreVPN.exe.sha256
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
