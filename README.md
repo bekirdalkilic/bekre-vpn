@@ -1,3 +1,5 @@
+> **Proje Durumu:** Bu repo, public bir **portfolio ve referans implementasyon**dur. Geliştiricinin canlı sunucusuna erişim sağlamaz. Repodaki tüm config şablonları placeholder değerler içerir (gerçek IP, anahtar veya sertifika yoktur). Kendi sunucunuzda kurmak isterseniz aşağıdaki adımları kendi altyapınıza uyarlamanız gerekir. Detay için [NOTICE.md](NOTICE.md)'ye bakın.
+
 # Bekre VPN
 
 Kişisel self-hosted VPN altyapısı. DigitalOcean Frankfurt droplet üzerinde çalışır.
