@@ -8,7 +8,7 @@ Bu repoda yer alan kod, script ve dokümantasyon:
 
 - Mimariyi ve teknik yaklaşımı göstermek
 - Eğitim ve referans amaçlı incelenmek
-- Benzer bir sistem kurmak isteyenlere başlangıç noktası olmak
+- Benzer bir sistem kurmak isteyenlere genel bir yol haritası sunmak
 
 amacıyla paylaşılmıştır.
 
@@ -17,12 +17,21 @@ amacıyla paylaşılmıştır.
 Bu repo:
 
 - Production-ready, anahtar teslim bir VPN ürünü **değildir**
-- Ticari bir hizmet olarak sunulmamaktadır
+- Eksiksiz, tek komutla tekrar üretilebilir bir kurulum rehberi değildir — bazı adımlar (sertifika üretimi, dış bağımlılıklar) ortamına göre tamamlanmalıdır
 - Geliştiricinin canlı/aktif sunucusuna erişim sağlamaz ve sağlamayı amaçlamaz
-- Burada paylaşılan script ve config şablonları gerçek sunucu bilgisi, anahtar veya sertifika içermez — tüm hassas alanlar placeholder'dır
+- Burada paylaşılan script ve config şablonları gerçek sunucu bilgisi, IP, anahtar veya sertifika içermez — tüm hassas alanlar placeholder'dır
 
-## Kullanım
+## Lisans / Kullanım Koşulları
 
-Kod, kişisel/eğitim amaçlı kullanım ve referans için herhangi bir kısıtlama olmadan kullanılabilir. Kendi sunucunuzda benzer bir sistem kurmak isterseniz README'deki adımları kendi altyapınıza uyarlamanız gerekir; bu repo "olduğu gibi" (as-is) sağlanmıştır, herhangi bir garanti içermez.
+Bu kodun kullanımı şu koşullarla sınırlıdır:
+
+- ✅ **İzin verilen:** Kişisel kullanım, eğitim amaçlı inceleme, referans alma, kendi kişisel/akademik projelerinizde uyarlama
+- ❌ **Yasak:** Ticari kullanım, yeniden satış, ticari bir ürün veya hizmetin parçası olarak sunma
+
+Kodu kişisel veya akademik bir projede temel almak isterseniz, kaynağı belirtmeniz yeterlidir. Ticari kullanım için yazılı izin gereklidir.
+
+Bu repo "olduğu gibi" (as-is) sağlanmıştır, herhangi bir garanti içermez. Kendi sunucunuzda benzer bir sistem kurarsanız güvenlik yapılandırmasının sorumluluğu size aittir.
+
+## İletişim
 
 Sorularınız veya geliştirme önerileriniz için repo üzerinden issue açabilirsiniz.

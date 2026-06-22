@@ -1,29 +1,31 @@
-> **Proje Durumu:** Bu repo, public bir **portfolio ve referans implementasyon**dur. Geliştiricinin canlı sunucusuna erişim sağlamaz. Repodaki tüm config şablonları placeholder değerler içerir (gerçek IP, anahtar veya sertifika yoktur). Kendi sunucunuzda kurmak isterseniz aşağıdaki adımları kendi altyapınıza uyarlamanız gerekir. Detay için [NOTICE.md](NOTICE.md)'ye bakın.
+> **Proje Durumu:** Bu repo, public bir **portfolio ve referans implementasyon**dur. Geliştiricinin canlı sunucusuna erişim sağlamaz. Repodaki tüm config şablonları placeholder değerler içerir (gerçek IP, anahtar veya sertifika yoktur). Aşağıdaki kurulum adımları **eksiksiz, tek komutla çalışan bir production rehberi değildir** — mimariyi ve yaklaşımı göstermek amaçlıdır. Kendi sunucunuzda benzer bir sistem kurmak isterseniz adımları kendi ortamınıza göre tamamlamanız gerekir. Kullanım koşulları için [NOTICE.md](NOTICE.md)'ye bakın.
 
 # Bekre VPN
 
-Kişisel self-hosted VPN altyapısı. DigitalOcean Frankfurt droplet üzerinde çalışır.
+Dual-protocol self-hosted VPN altyapısı — kısıtlayıcı ağlarda (kurumsal, akademik, kamu) DPI (Deep Packet Inspection) tabanlı VPN engellerini aşmak için tasarlandı.
 
 ## Mimari
 
 ```
 İstemci
 ├── [WG] HIZLI MOD     →  UDP 443   →  WireGuard (direkt)
-└── [OVPN] GİZLİ MOD  →  TCP 443   →  Stunnel → OpenVPN
+└── [OVPN] GİZLİ MOD   →  TCP 443   →  Stunnel → OpenVPN
                                         (DPI bypass, kısıtlı ağlar için)
 ```
 
-**Sunucu:** Ubuntu 24.04 LTS · DigitalOcean Frankfurt  
-**İstemci:** Windows (BekreVPN.exe) · Linux (vpn_client.py)
+WireGuard ve Stunnel aynı 443 portunu paylaşır — biri UDP, diğeri TCP olduğu için çakışma olmaz. Bu, port bazlı engellemeleri ve protokol bazlı DPI filtrelemeyi aynı anda aşmaya yönelik bir tasarım kararıdır.
 
----
+**Referans sunucu ortamı:** Ubuntu 24.04 LTS (genel bir Linux VPS — herhangi bir sağlayıcıda çalışır)
+**İstemci:** Windows (derlenmiş EXE) · Linux (Python script)
 
 ## İstemci Kurulumu
 
-### Windows (hazır EXE)
+> Aşağıdaki adımlar, sunucu yöneticisinden config dosyalarını almış olduğunuzu varsayar. Bu repo gerçek config dosyası içermez.
 
-1. **[Releases](https://github.com/bekirdalkilic/bekre-vpn/releases/latest)** sayfasından `BekreVPN.exe` indir
-2. Sunucu yöneticisinden `configs.zip` al, aç
+### Windows
+
+1. [Releases](../../releases) sayfasından en güncel EXE'yi indirin
+2. Sunucu yöneticinizden `configs.zip` alın, açın
 3. Klasör yapısı şöyle olmalı:
    ```
    BekreVPN.exe
@@ -32,10 +34,9 @@ Kişisel self-hosted VPN altyapısı. DigitalOcean Frankfurt droplet üzerinde �
    ├── client.ovpn
    └── stunnel.conf
    ```
-4. `BekreVPN.exe`'ye sağ tık → **Yönetici olarak çalıştır**
+4. EXE'ye sağ tık → **Yönetici olarak çalıştır**
 
-> **Not:** Windows Smart App Control açıksa EXE çalışmaz.  
-> Ayarlar → Gizlilik ve Güvenlik → Windows Güvenliği → Smart App Control → Kapalı
+> **Not:** EXE imzasız bir build olduğu için Windows tarafından "tanınmayan yayıncı" uyarısı görebilirsiniz. Eğer bu sizi rahatsız ediyorsa, kaynak koddan kendiniz derleyebilirsiniz (aşağıda "EXE Build" bölümüne bakın) — bu durumda Windows'un güvenlik özelliklerini kapatmanıza gerek kalmaz.
 
 ### Linux (Fedora)
 
@@ -43,7 +44,7 @@ Kişisel self-hosted VPN altyapısı. DigitalOcean Frankfurt droplet üzerinde �
 sudo dnf install -y wireguard-tools openvpn stunnel curl python3-tkinter
 pip install customtkinter --break-system-packages
 
-# Sunucu yöneticisinden configs/ klasörünü al, sonra:
+# Sunucu yöneticinizden configs/ klasörünü alın, sonra:
 python3 client/vpn_client.py
 ```
 
@@ -54,8 +55,6 @@ sudo apt install -y wireguard-tools openvpn stunnel4 curl python3-tk
 pip install customtkinter --break-system-packages
 python3 client/vpn_client.py
 ```
-
----
 
 ## Dizin Yapısı
 
@@ -68,20 +67,23 @@ bekre-vpn/
 │   └── build_windows.bat   # Manuel EXE build (PyInstaller)
 ├── server/
 │   ├── scripts/
-│   │   ├── add-user.sh        # Kullanıcı ekle
+│   │   ├── add-user.sh        # Kullanıcı ekle (referans script)
 │   │   ├── remove-user.sh     # Kullanıcı sil
 │   │   ├── list-users.sh      # Kullanıcı listesi + bağlantı durumu
 │   │   └── create-package.sh  # configs.zip oluştur (SHA256 dahil)
 │   └── configs/
 │       ├── wg0.conf.template
 │       └── stunnel-server.conf.template
-└── docs/
-    └── SECURITY.md
+├── docs/
+│   └── SECURITY.md
+└── NOTICE.md
 ```
 
----
+> **Not:** `server/configs/` içinde sadece WireGuard ve Stunnel şablonları bulunur. OpenVPN sunucu konfigürasyonu (`server.conf`) ve sertifika üretim adımları aşağıda anlatılmıştır ancak repo içine dahil edilmemiştir — bunlar ortamınıza özgü olmalıdır.
 
-## Sunucu Kurulumu
+## Referans Sunucu Kurulumu
+
+Aşağıdaki adımlar genel bir yol haritasıdır; eksiksiz, kopyala-yapıştır bir production rehberi değildir. Her ortam farklı olduğu için kendi sunucunuza göre uyarlamanız gerekir.
 
 ### 1. Paketler
 
@@ -114,6 +116,10 @@ cd /etc/openvpn/easy-rsa
 
 ### 4. OpenVPN + Stunnel
 
+OpenVPN sunucu konfigürasyonu (`server.conf`) bu repoya dahil değildir — OpenVPN'in resmi dokümantasyonundaki örnek server.conf temel alınarak, sertifika yollarının yukarıdaki Easy-RSA çıktılarına işaret ettiğinden emin olarak oluşturulmalıdır.
+
+Stunnel için `server/configs/stunnel-server.conf.template` şablonunu kullanın; TLS sertifikası ve anahtarı (`cert`, `key` alanları) kendi sunucunuzda üretmeniz veya Let's Encrypt ile almanız gerekir.
+
 ```bash
 systemctl enable --now openvpn-server@server stunnel4
 ```
@@ -126,9 +132,9 @@ chmod +x /root/scripts/*.sh
 echo "3" > /etc/wireguard/ip_registry
 ```
 
----
+`add-user.sh` çalıştırmadan önce dosyanın başındaki `SERVER_IP` placeholder'ını kendi sunucu IP'inizle değiştirmeniz gerekir — script bu kontrolü otomatik yapar ve doldurulmadıysa uyarı verip durur.
 
-## Kullanıcı Yönetimi (Sunucuda)
+## Kullanıcı Yönetimi (Referans Scriptler)
 
 ```bash
 # Kullanıcı ekle (CA passphrase interaktif sorulur)
@@ -146,25 +152,25 @@ echo "3" > /etc/wireguard/ip_registry
 /root/scripts/list-users.sh
 ```
 
----
+> **Not:** `create-package.sh`, `/root/installers/` ve `/root/scripts/BekreVPN.exe` gibi repo dışı dosyalara referans verir — bunlar kendi ortamınızda ayrıca hazırlanmalıdır.
 
 ## EXE Build (Manuel)
 
-Tag push yapmadan kendin build etmek istersen:
+Tag push yapmadan kendiniz build etmek isterseniz:
 
 ```bash
 # Windows'ta:
 cd client
 build_windows.bat
+```
 
-# Linux'ta (wine ile değil, doğrudan Windows runner'da):
+```bash
+# Veya doğrudan komut satırından:
 pip install pyinstaller customtkinter
 pyinstaller --onefile --windowed --name BekreVPN client/vpn_client.py
 ```
 
----
-
-## Güvenlik
+## Güvenlik Yaklaşımı
 
 | Önlem | Detay |
 |---|---|
@@ -175,18 +181,17 @@ pyinstaller --onefile --windowed --name BekreVPN client/vpn_client.py
 | Kill switch | istemci wg0.conf'ta iptables kuralları |
 | WireGuard port | UDP 443 |
 | Paket checksum | SHA256 |
+| Brute-force koruması | Fail2Ban (referans ortamda aktif, repo dışı kurulum) |
 
 Detaylar: [docs/SECURITY.md](docs/SECURITY.md)
 
----
-
 ## Roadmap
 
-- [x] Fail2Ban (SSH + OpenVPN brute-force koruması)
 - [ ] Offline CA mimarisi
 - [ ] WebSocket obfuscation (wstunnel)
 - [ ] Monitoring paneli
+- [ ] Kullanıcı adı input validasyonu (script güvenliği)
 
-## Lisans
+## Lisans / Kullanım
 
-Kişisel kullanım / eğitim amaçlı.
+Kişisel kullanım ve eğitim amaçlı. Ticari kullanım ve yeniden satış yasaktır. Detaylar için [NOTICE.md](NOTICE.md).
