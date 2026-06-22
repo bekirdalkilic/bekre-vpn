@@ -24,6 +24,11 @@ WireGuard ve Stunnel aynı 443 portunu paylaşır — biri UDP, diğeri TCP oldu
 
 ### Windows
 
+**Gereken harici bağımlılıklar (önceden kurulu olmalı):**
+- WireGuard (wireguard.com/install)
+- OpenVPN (openvpn.net/community-downloads)
+- Stunnel (stunnel.org/downloads.html)
+
 1. [Releases](../../releases) sayfasından en güncel EXE'yi indirin
 2. Sunucu yöneticinizden `configs.zip` alın, açın
 3. Klasör yapısı şöyle olmalı:
