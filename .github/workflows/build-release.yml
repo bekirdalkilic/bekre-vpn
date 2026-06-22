@@ -34,17 +34,26 @@ jobs:
           body: |
             ## BekreVPN ${{ github.ref_name }}
 
+            **Bu EXE tek başına bir VPN hizmetine erişim sağlamaz.** Çalışması için kendi VPN sunucunuza ait WireGuard, OpenVPN ve Stunnel yapılandırmalarını oluşturmanız gerekir. Proje sahibinin canlı sunucu bilgileri ve kullanıcı config'leri bu repoya dahil edilmemiştir.
+
+            ### Gereken harici bağımlılıklar
+            - WireGuard (wireguard.com/install)
+            - OpenVPN (openvpn.net/community-downloads)
+            - Stunnel (stunnel.org/downloads.html)
+
             ### İndirme
-            - **BekreVPN.exe** → Windows istemcisi (admin olarak çalıştır)
+            - **BekreVPN.exe** → Windows istemcisi
             - **BekreVPN.exe.sha256** → Checksum doğrulama
 
             ### Kullanım
             1. EXE'yi indir
-            2. Sunucu yöneticisinden `configs.zip` al, aç
-            3. EXE ile aynı klasöre `configs/` klasörünü koy
-            4. EXE'yi admin olarak çalıştır
+            2. Kendi sunucunuz için oluşturduğunuz configs/ klasörünü (wg0.conf, client.ovpn, stunnel.conf) EXE ile aynı dizine koyun
+            3. EXE'yi admin olarak çalıştırın
 
-            > Windows Smart App Control açıksa: Ayarlar → Gizlilik ve Güvenlik → Smart App Control → Kapalı
+            > Bu EXE code-signing sertifikasıyla imzalanmamıştır, bu nedenle Windows "tanınmayan yayıncı" uyarısı gösterebilir. İsterseniz kaynak koddan kendiniz build edebilirsiniz: client/build_windows.bat
+
+            ---
+            *Not: Bu açıklama otomatik üretilir; önceki release açıklamaları geriye dönük güncellenmez.*
           files: |
             dist/BekreVPN.exe
             dist/BekreVPN.exe.sha256

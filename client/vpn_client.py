@@ -178,7 +178,11 @@ class App(ctk.CTk):
         self.log("SYS: OS=" + platform.system())
 
         if not self.has_wg and not self.has_ovpn:
-            self.log("ERR: Config dosyalari bulunamadi!")
+            self.status_label.configure(text="BAGLANTI YAPILANDIRMALARI BULUNAMADI")
+            self.status_dot.configure(text_color="#888888")
+            self.log("ERR: Baglanti yapilandirmalari bulunamadi!")
+            self.log("Bu EXE tek basina bir VPN sunucusuna baglanamaz.")
+            self.log("configs/ klasorunu (wg0.conf, client.ovpn, stunnel.conf) bu EXE ile ayni dizine koyun.")
             self.log("PATH: " + self.config_path)
 
     # ─── Log & Status ───
