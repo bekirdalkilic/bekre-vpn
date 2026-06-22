@@ -1,4 +1,4 @@
-> **Proje Durumu:** Bu repo, public bir **portfolio ve referans implementasyon**dur. Geliştiricinin canlı sunucusuna erişim sağlamaz. Repodaki tüm config şablonları placeholder değerler içerir (gerçek IP, anahtar veya sertifika yoktur). Aşağıdaki kurulum adımları **eksiksiz, tek komutla çalışan bir production rehberi değildir** — mimariyi ve yaklaşımı göstermek amaçlıdır. Kendi sunucunuzda benzer bir sistem kurmak isterseniz adımları kendi ortamınıza göre tamamlamanız gerekir. Kullanım koşulları için [NOTICE.md](NOTICE.md)'ye bakın.
+> **Proje Durumu:** Bu repo, kendi VPN altyapınızı kurmanız için kaynak kod ve referans kurulum adımları sunar. **Proje sahibinin canlı VPN sunucusuna erişim sağlamaz.** Gerçek sunucu adresleri, kimlik bilgileri, private key'ler, sertifikalar ve production kullanıcı yapılandırmaları bilerek dahil edilmemiştir — tüm config şablonları placeholder değerler içerir. Aşağıdaki kurulum adımları mimariyi ve yaklaşımı göstermek amaçlıdır; kendi sunucunuzda kurmak isterseniz kendi IP adresinizi, kendi anahtarlarınızı ve kendi sertifikalarınızı oluşturmanız gerekir. Kullanım koşulları için [NOTICE.md](NOTICE.md)'ye bakın.
 
 # Bekre VPN
 

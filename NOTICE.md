@@ -32,6 +32,10 @@ Kodu kişisel veya akademik bir projede temel almak isterseniz, kaynağı belirt
 
 Bu repo "olduğu gibi" (as-is) sağlanmıştır, herhangi bir garanti içermez. Kendi sunucunuzda benzer bir sistem kurarsanız güvenlik yapılandırmasının sorumluluğu size aittir.
 
+## Geçmiş Commit Geçmişi
+
+Repo geçmişi (tüm commit'ler dahil) hassas bilgi (private key, gerçek sunucu IP'si, sertifika) açısından tarandı; herhangi bir bulgu yoktur.
+
 ## İletişim
 
 Sorularınız veya geliştirme önerileriniz için repo üzerinden issue açabilirsiniz.
