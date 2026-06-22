@@ -3,6 +3,13 @@ set -e
 
 USERNAME=$1
 SERVER_IP="<SUNUCU_IP>"
+
+if [ "$SERVER_IP" = "<SUNUCU_IP>" ]; then
+    echo "HATA: SERVER_IP placeholder dolduruculmadi."
+    echo "Bu scripti calistirmadan once 4. satirdaki SERVER_IP degerini kendi sunucu IP'inle degistir:"
+    echo '  SERVER_IP="203.0.113.10"'
+    exit 1
+fi
 SERVER_WG_PUBLIC=$(cat /etc/wireguard/server_public.key)
 IP_REGISTRY="/etc/wireguard/ip_registry"
 LOCK_FILE="/tmp/bekre-vpn.lock"
