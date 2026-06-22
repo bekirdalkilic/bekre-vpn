@@ -19,6 +19,12 @@ if [ -z "$USERNAME" ]; then
     exit 1
 fi
 
+# Kullanıcı adı validasyonu (path traversal / injection önleme)
+if ! [[ "$USERNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "❌ Geçersiz kullanıcı adı. Sadece harf, sayı, alt çizgi (_) ve tire (-) kullanılabilir."
+    exit 1
+fi
+
 if [ -d "/root/clients/$USERNAME" ]; then
     echo "❌ '$USERNAME' zaten mevcut!"
     exit 1

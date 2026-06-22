@@ -8,6 +8,12 @@ if [ -z "$USERNAME" ]; then
     exit 1
 fi
 
+# Kullanıcı adı validasyonu (path traversal / injection önleme)
+if ! [[ "$USERNAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "Hata: Gecersiz kullanici adi. Sadece harf, sayi, alt cizgi (_) ve tire (-) kullanilabilir."
+    exit 1
+fi
+
 if [ ! -d "/root/clients/$USERNAME" ]; then
     /root/scripts/add-user.sh "$USERNAME"
 fi
@@ -26,8 +32,11 @@ cp /root/installers/wireguard-installer.msi "$PACK_DIR/installers/" 2>/dev/null 
 cp /root/installers/openvpn-installer.msi   "$PACK_DIR/installers/" 2>/dev/null || echo "UYARI: openvpn-installer.msi eksik"
 cp /root/installers/stunnel-installer.exe   "$PACK_DIR/installers/" 2>/dev/null || echo "UYARI: stunnel-installer.exe eksik"
 
-# GUI EXE
+# GUI EXE (Windows icin)
 cp /root/scripts/BekreVPN.exe "$PACK_DIR/" 2>/dev/null || echo "UYARI: BekreVPN.exe bulunamadi"
+
+# GUI Python script (Linux icin)
+cp /root/scripts/vpn_client.py "$PACK_DIR/" 2>/dev/null || echo "UYARI: vpn_client.py bulunamadi"
 
 # Kurulum scriptleri
 cp /root/scripts/kur_template.bat "$PACK_DIR/kur.bat" 2>/dev/null || true
