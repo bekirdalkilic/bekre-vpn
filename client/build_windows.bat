@@ -3,7 +3,7 @@ echo ============================================
 echo    BEKRE VPN - Windows EXE Build
 echo ============================================
 
-pip install pyinstaller customtkinter --quiet
+pip install -r ..\requirements-build.txt --quiet
 
 pyinstaller --onefile --windowed --name "BekreVPN" vpn_client.py
 

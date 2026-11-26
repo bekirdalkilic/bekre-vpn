@@ -11,10 +11,9 @@ fi
 
 for USER_DIR in /root/clients/*/; do
     USERNAME=$(basename "$USER_DIR")
-    WG_IP=$(grep -oP 'AllowedIPs = 10\.0\.0\.\K[0-9]+' /etc/wireguard/wg0.conf | head -1 || echo "?")
 
     # wg show ile aktif handshake kontrolü
-    WG_PUB=$(cat /etc/wireguard/${USERNAME}_public.key 2>/dev/null || echo "")
+    WG_PUB=$(cat "/etc/wireguard/${USERNAME}_public.key" 2>/dev/null || echo "")
     STATUS="offline"
     if [ -n "$WG_PUB" ]; then
         HANDSHAKE=$(wg show wg0 latest-handshakes 2>/dev/null | grep "$WG_PUB" | awk '{print $2}')

@@ -1,0 +1,3 @@
+# Calisma zamani bagimliligi (Linux Python istemcisi ve EXE build).
+# Surum, 5.x serisinin son surumune sabitlenmistir; 6.x bu calismada degerlendirilmedi.
+customtkinter==5.2.2

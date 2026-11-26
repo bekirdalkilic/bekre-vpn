@@ -6,11 +6,13 @@ ListenPort = 443
 # Sunucunun private key'i
 PrivateKey = <SUNUCU_OZEL_ANAHTARI>
 
-# IPv6 leak önleme
+# Sunucuda IPv6'yı kapatır (tüm sistem için; yan etkisi vardır).
+# İstemci tarafındaki IPv6 sızıntı korumasının yerine geçmez ve test edilmemiştir (docs/TESTING.md)
 PostUp   = sysctl -w net.ipv6.conf.all.disable_ipv6=1
 PostDown = sysctl -w net.ipv6.conf.all.disable_ipv6=0
 
 # NAT — VPN trafiğini internete çıkar
+# Gereksinim: net.ipv4.ip_forward=1 (README, adım 2) ve doğru ağ arayüzü adı (burada eth0)
 PostUp   = iptables -A FORWARD -i wg0 -j ACCEPT; iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE
 
