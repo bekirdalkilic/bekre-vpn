@@ -8,6 +8,9 @@ on:
 jobs:
   build-windows:
     runs-on: windows-2022
+    # En az yetki: yalnizca Release olusturmak icin yazma izni
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
@@ -19,13 +22,16 @@ jobs:
           python-version: '3.11'
 
       - name: Bağımlılıkları kur
-        run: pip install pyinstaller customtkinter
+        run: pip install -r requirements-build.txt
 
       - name: EXE build
         run: pyinstaller --onefile --windowed --name BekreVPN client/vpn_client.py
 
       - name: SHA256 checksum
-        run: certutil -hashfile dist\BekreVPN.exe SHA256 > dist\BekreVPN.exe.sha256
+        shell: pwsh
+        run: |
+          $hash = (Get-FileHash dist\BekreVPN.exe -Algorithm SHA256).Hash.ToLower()
+          "$hash  BekreVPN.exe" | Out-File -Encoding ascii dist\BekreVPN.exe.sha256
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v2

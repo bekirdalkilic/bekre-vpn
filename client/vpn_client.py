@@ -6,11 +6,20 @@ import shutil
 import platform
 import sys
 import glob
+import re
 import customtkinter as ctk
 
 # --- TEMA ---
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
+
+
+def proc_pattern(exe_name, conf_path):
+    """pkill -f icin desen: yalnizca bu istemcinin KENDI yapilandirma dosyasiyla
+    baslattigi stunnel/openvpn surecleriyle eslesir. Sistemdeki diger VPN/stunnel
+    surecleri (baska oturumlar, sunucu servisleri) etkilenmez.
+    re.escape sayesinde desen, komut satirindaki kendi metniyle de eslesmez."""
+    return re.escape(exe_name) + r"\b.*" + re.escape(conf_path)
 
 
 def find_executable(name):
@@ -241,7 +250,7 @@ class App(ctk.CTk):
                     c = "#34c759" if dl > 1024 else "#555555"
                     self.after(0, lambda d=dl_s, u=ul_s, clr=c: self.speed_label.configure(
                         text="↓ " + d + "   ↑ " + u, text_color=clr))
-                except:
+                except Exception:
                     break
 
         elif self.is_windows:
@@ -257,7 +266,7 @@ class App(ctk.CTk):
                     c = "#34c759" if dl > 1024 else "#555555"
                     self.after(0, lambda d=dl_s, u=ul_s, clr=c: self.speed_label.configure(
                         text="↓ " + d + "   ↑ " + u, text_color=clr))
-                except:
+                except Exception:
                     break
 
     def _win_bytes(self):
@@ -268,7 +277,7 @@ class App(ctk.CTk):
                 if "Bytes" in line or "Bayt" in line:
                     parts = line.split()
                     return int(parts[1]), int(parts[2])
-        except:
+        except Exception:
             pass
         return 0, 0
 
@@ -293,7 +302,7 @@ class App(ctk.CTk):
                 ip = r.stdout.strip()
                 self.after(0, lambda: self.ip_label.configure(text="IP: [ " + ip + " ]"))
                 self.after(0, lambda: self.log("NET: Public IP = " + ip))
-        except:
+        except Exception:
             self.after(0, lambda: self.ip_label.configure(text="IP: [ ERROR ]"))
 
     def _check_status(self):
@@ -318,11 +327,25 @@ class App(ctk.CTk):
             if self.is_windows:
                 kw["creationflags"] = subprocess.CREATE_NO_WINDOW
             return subprocess.run(cmd, **kw)
-        except:
+        except Exception:
             return None
 
     def _sudo(self, cmd):
         return ["pkexec"] + cmd if self.is_linux else cmd
+
+    # ─── Yalnizca kendi sureclerimizi durdur ───
+    def _stop_vpn_processes(self):
+        ovpn_conf = os.path.join(self.config_path, "client.ovpn")
+        stunnel_conf = os.path.join(self.config_path, "stunnel.conf")
+        if self.is_linux:
+            self._cmd(self._sudo(["pkill", "-f", proc_pattern("stunnel", stunnel_conf)]))
+            self._cmd(self._sudo(["pkill", "-f", proc_pattern("openvpn", ovpn_conf)]))
+        elif self.is_windows:
+            # Sistemdeki tum stunnel/openvpn sureclerini degil, yalnizca bu istemcinin
+            # baslattigi sureclerin PID'lerini sonlandir.
+            for p in [self.ovpn_process, self.stunnel_process]:
+                if p is not None and p.poll() is None:
+                    self._cmd(["taskkill", "/f", "/t", "/pid", str(p.pid)])
 
     # ─── stunnel pid fix ───
     def _fix_stunnel(self, path):
@@ -339,7 +362,7 @@ class App(ctk.CTk):
                         fixed.append(line)
                 with open(path, "w") as f:
                     f.write("\n".join(fixed))
-            except:
+            except Exception:
                 pass
 
     # ─── WireGuard ───
@@ -372,7 +395,7 @@ class App(ctk.CTk):
                         self.after(0, lambda a=ago: self.log(
                             "WG: Handshake OK (" + str(a) + "s ago)" if a < 30
                             else "WG: No handshake yet, check server"))
-                    except:
+                    except Exception:
                         pass
                 self.after(0, lambda: self.log("SUCCESS: WireGuard tunnel UP"))
                 self.after(0, lambda: self._set_status(True, "wg"))
@@ -407,13 +430,8 @@ class App(ctk.CTk):
         ovpn_conf = os.path.join(self.config_path, "client.ovpn")
         stunnel_conf = os.path.join(self.config_path, "stunnel.conf")
 
-        # Onceki prosesleri temizle
-        if self.is_linux:
-            self._cmd(self._sudo(["pkill", "-f", "stunnel"]))
-            self._cmd(self._sudo(["pkill", "-f", "openvpn"]))
-        elif self.is_windows:
-            self._cmd(["taskkill", "/f", "/im", "stunnel.exe"])
-            self._cmd(["taskkill", "/f", "/im", "openvpn.exe"])
+        # Onceki (yalnizca kendi) prosesleri temizle
+        self._stop_vpn_processes()
         time.sleep(1)
 
         self._fix_stunnel(stunnel_conf)
@@ -464,7 +482,7 @@ class App(ctk.CTk):
                 break
             try:
                 d = line.decode("utf-8", errors="ignore").strip()
-            except:
+            except Exception:
                 continue
             if not d:
                 continue
@@ -516,17 +534,12 @@ class App(ctk.CTk):
             elif self.is_windows:
                 self._cmd([self.wireguard_exe, "/uninstalltunnelservice", "wg0"])
         elif self.connection_type == "ovpn":
-            if self.is_linux:
-                self._cmd(self._sudo(["pkill", "-f", "openvpn"]))
-                self._cmd(self._sudo(["pkill", "-f", "stunnel"]))
-            elif self.is_windows:
-                self._cmd(["taskkill", "/f", "/im", "openvpn.exe"])
-                self._cmd(["taskkill", "/f", "/im", "stunnel.exe"])
+            self._stop_vpn_processes()
             for p in [self.ovpn_process, self.stunnel_process]:
                 if p:
                     try:
                         p.terminate()
-                    except:
+                    except Exception:
                         pass
 
         time.sleep(1)

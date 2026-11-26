@@ -4,5 +4,6 @@
 [openvpn]
 accept  = 443
 connect = 127.0.0.1:1194
-cert    = /etc/stunnel/stunnel.pem   ; self-signed veya Let's Encrypt
+; cert/key: self-signed veya Let's Encrypt
+cert    = /etc/stunnel/stunnel.pem
 key     = /etc/stunnel/stunnel.key
